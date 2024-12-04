@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Basil Jones - Reviews</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+
+      body {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 240px;
+        background-color: #1c3b6a;
+        padding: 20px;
+        color: white;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border-radius: 8px;
+        gap: 10px;
+      }
+
+      .sidebar-item:hover {
+        background-color: #5ca8d2;
+      }
+
+      /* Main Content */
+      .main-content {
+        flex-grow: 1;
+        padding: 20px;
+        background-color: #ffffff;
+      }
+      .profile-container {
+        background-color: white;
+      }
+      .profile-header {
+        display: flex;
+        align-items: center;
+        border-bottom: 1px solid #e9ecef;
+        padding-bottom: 20px;
+        margin-bottom: 20px;
+      }
+      .profile-avatar {
+        width: 80px;
+        height: 80px;
+        background-color: #1c3b6a;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-right: 20px;
+      }
+      .profile-info h1 {
+        color: #2c3e50;
+        margin-bottom: 5px;
+      }
+
+      .review-container {
+        background-color: white;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+      .section-title {
+        color: #2c3e50;
+        border-bottom: 2px solid #3498db;
+        padding-bottom: 10px;
+        margin-bottom: 20px;
+      }
+
+      /* Provider Profile */
+      .provider-profile {
+        display: flex;
+        align-items: center;
+        margin-bottom: 20px;
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-radius: 8px;
+      }
+      .provider-avatar {
+        width: 80px;
+        height: 80px;
+        background-color: #3498db;
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 24px;
+        margin-right: 20px;
+      }
+      .provider-info h2 {
+        margin-bottom: 5px;
+        color: #2c3e50;
+      }
+
+      /* Star Rating */
+      .star-rating {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 20px;
+      }
+      .star-rating input {
+        display: none;
+      }
+      .star-rating label {
+        font-size: 30px;
+        color: #ddd;
+        cursor: pointer;
+        transition: color 0.2s;
+      }
+      .star-rating label:hover,
+      .star-rating label:hover ~ label,
+      .star-rating input:checked ~ label {
+        color: #ffc107;
+      }
+
+      /* Form Styles */
+      .form-group {
+        margin-bottom: 20px;
+      }
+      .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #2c3e50;
+        font-weight: 600;
+      }
+      .form-control {
+        width: 100%;
+        padding: 10px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 16px;
+      }
+      .form-control:focus {
+        outline: none;
+        border-color: #3498db;
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.25);
+      }
+
+      /* Button Styles */
+      .btn {
+        display: inline-block;
+        padding: 10px 20px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: all 0.3s ease;
+      }
+      .btn-primary {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        width: 100%;
+        margin-top: 20px;
+      }
+      .btn-primary:hover {
+        background-color: #2980b9;
+      }
+
+      /* Skill Tags */
+      .skill-tags {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 5px;
+      }
+      .skill-tag {
+        background-color: #e9ecef;
+        padding: 3px 8px;
+        border-radius: 12px;
+        font-size: 0.8em;
+        color: #495057;
+      }
+      .star-filled {
+            color: #FFD700;
+        }
+        .star-empty {
+            color: #E0E0E0;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            <div class="bg-blue-600 text-white p-6">
+                <div class="flex items-center">
+                    <div class="w-16 h-16 bg-blue-400 rounded-full flex items-center justify-center text-2xl font-bold mr-4">
+                        BJ
+                    </div>
+                    <div>
+                        <h1 class="text-2xl font-bold">Basil Jones</h1>
+                        <p class="text-blue-200">Electrician</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6">
+                <div class="flex items-center mb-6">
+                    <div class="text-4xl font-bold mr-4">4.8</div>
+                    <div>
+                        <div class="flex text-3xl mb-2">
+                            <span class="star-filled">★</span>
+                            <span class="star-filled">★</span>
+                            <span class="star-filled">★</span>
+                            <span class="star-filled">★</span>
+                            <span class="star-empty">★</span>
+                        </div>
+                        <div class="text-gray-600">Based on 42 Reviews</div>
+                    </div>
+                </div>
+
+                <div class="flex justify-center space-x-4 mb-6">
+                    <button id="filter-low-stars" class="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition">
+                        2 Stars and Below
+                    </button>
+                    <button id="filter-high-stars" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">
+                        3 Stars and Above
+                    </button>
+                </div>
+
+                <div id="reviews-container" class="space-y-6">
+                    <div class="bg-gray-50 p-4 rounded-lg review-item" data-rating="5">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center mr-3">
+                                    JD
+                                </div>
+                                <span class="font-semibold">John Doe</span>
+                            </div>
+                            <div class="text-yellow-500 text-xl">
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">Basil did an excellent job with the electrical repairs in my home. Very professional and thorough!</p>
+                        <div class="text-sm text-gray-500 mt-2">Electrical Repair - June 15, 2024</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg review-item" data-rating="4">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-blue-500 text-white rounded-full flex items-center justify-center mr-3">
+                                    SM
+                                </div>
+                                <span class="font-semibold">Sarah Martinez</span>
+                            </div>
+                            <div class="text-yellow-500 text-xl">
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-empty">★</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">Good service, completed the job quickly and efficiently. Would recommend for electrical work.</p>
+                        <div class="text-sm text-gray-500 mt-2">Electrical Installation - May 22, 2024</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg review-item" data-rating="3">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-purple-500 text-white rounded-full flex items-center justify-center mr-3">
+                                    MR
+                                </div>
+                                <span class="font-semibold">Mike Robertson</span>
+                            </div>
+                            <div class="text-yellow-500 text-xl">
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-empty">★</span>
+                                <span class="star-empty">★</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">Service was okay, but there were some delays in communication. Still got the job done eventually.</p>
+                        <div class="text-sm text-gray-500 mt-2">Electrical Troubleshooting - April 10, 2024</div>
+                    </div>
+
+                    <div class="bg-gray-50 p-4 rounded-lg review-item" data-rating="2">
+                        <div class="flex justify-between items-center mb-2">
+                            <div class="flex items-center">
+                                <div class="w-8 h-8 bg-red-500 text-white rounded-full flex items-center justify-center mr-3">
+                                    AR
+                                </div>
+                                <span class="font-semibold">Alex Rodriguez</span>
+                            </div>
+                            <div class="text-yellow-500 text-xl">
+                                <span class="star-filled">★</span>
+                                <span class="star-filled">★</span>
+                                <span class="star-empty">★</span>
+                                <span class="star-empty">★</span>
+                                <span class="star-empty">★</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-700">Not satisfied with the service. The work was incomplete and took longer than expected.</p>
+                        <div class="text-sm text-gray-500 mt-2">Electrical Wiring - March 5, 2024</div>
+                    </div>
+                </div>
+
+                <div class="mt-6 text-center">
+                    <button class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition">
+                        Load More Reviews
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const lowStarsBtn = document.getElementById('filter-low-stars');
+            const highStarsBtn = document.getElementById('filter-high-stars');
+            const reviewsContainer = document.getElementById('reviews-container');
+            const reviewItems = document.querySelectorAll('.review-item');
+
+            lowStarsBtn.addEventListener('click', () => {
+                // Update button styles
+                lowStarsBtn.classList.add('bg-blue-600', 'text-white');
+                lowStarsBtn.classList.remove('bg-gray-200', 'text-gray-800');
+                highStarsBtn.classList.remove('bg-blue-600', 'text-white');
+                highStarsBtn.classList.add('bg-gray-200', 'text-gray-800');
+
+                // Filter reviews
+                reviewItems.forEach(item => {
+                    const rating = parseInt(item.getAttribute('data-rating'));
+                    item.style.display = rating <= 2 ? 'block' : 'none';
+                });
+            });
+
+            highStarsBtn.addEventListener('click', () => {
+                // Update button styles
+                highStarsBtn.classList.add('bg-blue-600', 'text-white');
+                highStarsBtn.classList.remove('bg-gray-200', 'text-gray-800');
+                lowStarsBtn.classList.remove('bg-blue-600', 'text-white');
+                lowStarsBtn.classList.add('bg-gray-200', 'text-gray-800');
+
+                // Filter reviews
+                reviewItems.forEach(item => {
+                    const rating = parseInt(item.getAttribute('data-rating'));
+                    item.style.display = rating >= 3 ? 'block' : 'none';
+                });
+            });
+        });
+    function generateStarRating(rating) {
+      const stars = 5;
+      const fullStars = Math.floor(rating);
+      const remainder = rating % 1;
+
+      let starsHtml = "";
+      for (let i = 0; i < stars; i++) {
+        if (i < fullStars) {
+          // Full star
+          starsHtml += '<span class="star full">★</span>';
+        } else if (i === fullStars && remainder > 0) {
+          // Partially filled star with gradient
+          starsHtml += `
+                <span class="star partial" style="
+                    background: linear-gradient(to right, 
+                        gold ${remainder * 100}%, 
+                        #ccc ${remainder * 100}%
+                    );
+                    -webkit-background-clip: text;
+                    -webkit-text-fill-color: transparent;
+                ">★</span>`;
+        } else {
+          // Empty star
+          starsHtml += '<span class="star empty">☆</span>';
+        }
+      }
+      return starsHtml;
+    }
+  </script>
+</html>

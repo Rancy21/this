@@ -1,0 +1,740 @@
+﻿@{
+    Layout = null;
+    int userId = ViewBag.userId;
+    var chats = ViewBag.Chats as List<TheHandyGuys.Models.Chat>;
+    var latestChats = ViewBag.latestChats as List<TheHandyGuys.Models.Chat>;
+    TheHandyGuys.Models.Conversation conversation = ViewBag.conversation;
+    TheHandyGuys.Models.User theUser = new TheHandyGuys.Models.User();
+    TheHandyGuys.Models.User otherUser = new TheHandyGuys.Models.User();
+    if(conversation != null && userId != 0)
+    {
+        if (conversation.User1.user_id == userId)
+        {
+            otherUser = conversation.User;
+            theUser = conversation.User1;
+        }
+        else
+        {
+            otherUser = conversation.User1;
+            theUser = conversation.User;
+        }
+    }
+    
+    string otherFullName = otherUser.first_name + " " + otherUser.last_name;
+    string fullName = theUser.first_name + " " + theUser.last_name;
+    bool isFirst = true;
+
+}
+@functions {
+    public string GetFirstLetters(string input)
+    {
+        if (string.IsNullOrWhiteSpace(input))
+            return string.Empty;
+
+        // Split the string into words
+        string[] words = input.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+
+        // Ensure there are at least two words
+        if (words.Length < 2)
+            return string.Empty;
+
+        // Get the first letters of the first two words
+        char firstLetter = words[0][0];
+        char secondLetter = words[1][0];
+
+        // Return the result as a string
+        return $"{firstLetter}{secondLetter}".ToUpper(); // Convert to uppercase if needed
+    }
+
+    public string TruncateString(string input)
+    {
+        if (string.IsNullOrEmpty(input))
+            return input; // Return as is if null or empty
+
+        if (input.Length <= 37)
+            return input; // Return as is if length is less than or equal to 29
+
+        return input.Substring(0, 37) + "..."; // Truncate to 29 characters and add "..."
+    }
+
+}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HandyGuys - Chat</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+        }
+
+        :root {
+            --primary-color: #1c3b6a;
+            --secondary-color: #5ca8d2;
+            --background-light: #f5f5f5;
+            --white: #ffffff;
+            --text-gray: #333333;
+        }
+
+        body {
+            display: flex;
+            height: 100vh;
+            max-height: 100vh;
+            overflow: hidden;
+            background-color: var(--background-light);
+            color: var(--text-gray);
+        }
+
+        .sidebar {
+            width: 280px;
+            background-color: var(--primary-color);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+            .sidebar header {
+                margin-bottom: 40px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+                .sidebar header h1 {
+                    color: var(--white);
+                    font-size: 1.5rem;
+                    font-weight: 700;
+                }
+
+        .sidebar-items {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 15px 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            gap: 15px;
+            transition: background-color 0.3s ease;
+            color: var(--white);
+            opacity: 0.7;
+        }
+
+            .sidebar-item:hover,
+            .sidebar-item.active {
+                background-color: var(--secondary-color);
+                opacity: 1;
+            }
+
+            .sidebar-item svg {
+                stroke: var(--white);
+            }
+
+        .main-content {
+            flex: 1;
+            display: flex;
+            padding: 30px;
+            gap: 30px;
+            max-height: 100vh;
+            overflow: hidden;
+        }
+
+        .chat-container {
+            flex: 2;
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            max-height: 100%;
+        }
+
+        /* New styles for chat header */
+        .chat-header {
+            display: flex;
+            align-items: center;
+            padding: 20px 30px;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .chat-header-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 18px;
+            margin-right: 15px;
+            flex-shrink: 0;
+        }
+
+        .chat-header-info {
+            flex: 1;
+        }
+
+        .chat-header-name {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .chat-header-status {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .chat-header-actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .chat-header-action {
+            cursor: pointer;
+            color: var(--primary-color);
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+            .chat-header-action:hover {
+                opacity: 1;
+            }
+
+        .chat-date {
+            align-self: center;
+        }
+        #newMessages {
+            align-self: center;
+            background-color: darkblue;
+            padding: 7px;
+            padding-right: 17px;
+            padding-left: 17px;
+            color: white;
+            border: 2px solid;
+            border-radius: 20px; /* Makes the corners rounded */
+        }
+        /* Adjusting chat messages to account for header */
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: calc(100% - 180px); /* Accounting for header and input */
+        }
+
+            .chat-messages::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .chat-messages::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+                margin: 5px 5px 5px 0;
+            }
+
+            .chat-messages::-webkit-scrollbar-thumb {
+                background: var(--primary-color);
+                border-radius: 10px;
+            }
+
+        .chat-message {
+            display: flex;
+            max-width: 60%; /* Limit the width of the message box */
+            word-wrap: break-word; /* Ensure words wrap to the next line */
+            white-space: normal; /* Allow wrapping */
+            gap: 15px;
+        }
+
+            .chat-message.received {
+                align-self: flex-start; /* Align received messages to the left */
+            }
+
+            .chat-message.sent {
+                align-self: flex-end; /* Align sent messages to the right */
+            }
+
+        .chat-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+
+        .chat-text {
+            background-color: var(--background-light);
+            padding: 15px 20px 4px;
+            border-radius: 12px;
+            max-width: 80%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+            line-height: 1.6;
+        }
+
+            .chat-text-time {
+                margin-left: 20px;
+                text-align: right;
+                bottom: 5px;
+                right: 5px; /* Aligns to the bottom-right corner of the message */
+                font-size: 0.60rem; /* Smaller text */
+                color: gray; /* Light gray color */
+                font-style: italic; /* Optional for a distinct look */
+            }
+
+        .chat-input {
+            display: flex;
+            align-items: flex-end;
+            padding: 20px 30px;
+            background-color: var(--white);
+            border-top: 1px solid #e0e0e0;
+            gap: 15px;
+            flex-shrink: 0;
+        }
+
+        .chat-textarea {
+            flex: 1;
+            padding: 12px 20px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 16px;
+            resize: none;
+            max-height: 120px;
+            line-height: 1.5;
+            transition: border-color 0.3s ease;
+            overflow-y: auto;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+
+            .chat-textarea:focus {
+                outline: none;
+                border-color: var(--primary-color);
+            }
+
+            /* Scrollbar styling for modern browsers */
+            .chat-textarea::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .chat-textarea::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+                margin: 5px 5px 5px 0;
+            }
+
+            .chat-textarea::-webkit-scrollbar-thumb {
+                background: var(--primary-color);
+                border-radius: 10px;
+            }
+
+        .chat-input button {
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            padding: 12px 25px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+        }
+
+            .chat-input button:hover {
+                background-color: var(--secondary-color);
+            }
+
+        .conversations {
+            flex: 1;
+            background-color: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-height: 100%;
+            overflow-y: auto;
+        }
+
+            .conversations::-webkit-scrollbar {
+                width: 8px;
+            }
+
+            .conversations::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+                margin: 5px 5px 5px 0;
+            }
+
+            .conversations::-webkit-scrollbar-thumb {
+                background: var(--primary-color);
+                border-radius: 10px;
+            }
+
+            .conversations h3 {
+                font-size: 1.2rem;
+                margin-bottom: 20px;
+                color: var(--primary-color);
+            }
+
+        .conversation-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .conversation-item {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+            .conversation-item:hover {
+                background-color: var(--background-light);
+            }
+
+        .conversation-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .conversation-details {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .conversation-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .conversation-preview {
+            color: #666;
+            font-size: 0.8rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <header>
+            <svg width="40"
+                 height="40"
+                 viewBox="0 0 24 24"
+                 fill="none"
+                 stroke="currentColor"
+                 stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5M2 12l10 5 10-5"></path>
+            </svg>
+            <h1>HandyGuys</h1>
+        </header>
+        <div class="sidebar-items">
+            <div class="sidebar-item">
+                <svg width="24"
+                     height="24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     viewBox="0 0 24 24">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+                </svg>
+                Home
+            </div>
+            <div class="sidebar-item">
+                <svg width="24"
+                     height="24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     viewBox="0 0 24 24">
+                    <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                Profile
+            </div>
+            <div class="sidebar-item active">
+                <svg width="24"
+                     height="24"
+                     fill="none"
+                     stroke="currentColor"
+                     stroke-width="2"
+                     viewBox="0 0 24 24">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                </svg>
+                Chat
+            </div>
+        </div>
+    </div>
+    <div class="main-content">
+        @*<p>@ViewBag.message</p>*@
+        <div class="chat-container">
+            <div class="chat-header">
+                @{
+                    if (conversation == null)
+                    {
+
+
+                        <p>Select a conversation or choose a helper from the homepage and start chatting now.</p>
+                    }
+                    else
+                    {
+                        <div class="chat-header-avatar">@GetFirstLetters(otherFullName)</div>
+                        <div class="chat-header-info">
+                            <div class="chat-header-name">@otherFullName</div>
+                            <div class="chat-header-status">____________</div>
+                        </div>
+                    }
+                }
+
+            </div>
+            <div id="chatMessages" class="chat-messages">
+                @if (chats != null && chats.Any())
+                {
+                    bool chatIsNew = false;
+                    DateTime date = DateTime.Now.Date;
+                    DateTime chatDate = DateTime.Now;
+                    bool firstDate = true;
+                    DateTime yesterday = date.AddDays(-1);
+                    foreach (var chat in chats)
+                    {
+                        chatDate = Convert.ToDateTime(chat.date_time);
+                        if (firstDate)
+                        {
+                            date = chatDate;
+                            firstDate = false;
+                            if (date.Date == DateTime.Today)
+                            {
+                                <p class="chat-date">Today</p>
+                            }
+                            else if (date.Date == yesterday)
+                            {
+                                <p class="chat-date">Yesterday</p>
+                            }
+                            else
+                            {
+                                <p class="chat-date">@date.Date.ToString()</p>
+                            }
+                        }
+                        else if (date.Date != chatDate.Date)
+                        {
+                            date = chatDate;
+                            if (date.Date == DateTime.Today)
+                            {
+                                <p class="chat-date">Today</p>
+                            }
+                            else if (date.Date == yesterday)
+                            {
+                                <p class="chat-date">Yesterday</p>
+                            }
+                            else
+                            {
+                                <p class="chat-date">@date.Date.ToString()</p>
+                            }
+
+                        }
+                        chatIsNew = Convert.ToBoolean(chat.isNew);
+                        if (chatIsNew && isFirst)
+                        {
+                            if (chat.sender_id != userId)
+                            {
+                                <p id="newMessages">New messages</p>
+                                isFirst = false;
+                            }
+                        }
+                        string className = "";
+                        if (chat.sender_id != userId)
+                        {
+                            className = "chat-message received";
+                            <div class="@className">
+                                <div class="chat-avatar">@GetFirstLetters(otherFullName)</div>
+                                <div class="chat-text">
+                                    @chat.message
+                                    <div class="chat-text-time">@chat.date_time.Value.ToString("hh:mm tt")</div>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            className = "chat-message sent";
+                            <div class="@className">
+                                <div class="chat-avatar">@GetFirstLetters(fullName)</div>
+                                <div class="chat-text">
+                                    @chat.message
+                                    <div class="chat-text-time">@chat.date_time.Value.ToString("hh:mm tt")</div>
+                                </div>
+                            </div>
+                        }
+
+                    }
+                }
+                else if (conversation != null)
+                {
+                    <p>No chats available for this conversation.</p>
+                }
+            </div>
+            @using (Html.BeginForm("Index", "Chats", FormMethod.Post, new { @class = "needs-validation chat-input", novalidate = "novalidate" }))
+            {
+                @Html.AntiForgeryToken()
+                <textarea id="chat-textarea"
+                name="message"
+                placeholder="Type your message..."
+                rows="1"
+                class="chat-textarea" required></textarea>
+                        <input type="hidden" name="sender_id" value="@userId" />
+                        <input type="hidden" name="conv_id" value="1" />
+                        <input type="hidden" name="date_time" value="@DateTime.Now" />
+                        <input type="hidden" name="isNew" value="true" />
+                        <button type="submit">Send</button>
+            }
+        </div>
+        <div class="conversations">
+            <h3>Active Conversations</h3>
+            <div class="conversation-list">
+                @{ 
+                                if(latestChats != null && latestChats.Any())
+                                {
+                                    string conversatioName = "";
+                                    string message = "";
+                                    bool byUser = false;
+                                    bool isNew = false;
+
+                                    foreach (var chat in latestChats)
+                                    {
+                                        isNew = Convert.ToBoolean(chat.isNew);
+                                        message = chat.message;
+                                        if (chat.sender_id == userId)
+                                        {
+                                            message = "You: " + chat.message;
+                                            byUser = true;
+                                        }
+
+                                        if (chat.Conversation.User.user_id == userId)
+                                        {
+                                            conversatioName = chat.Conversation.User1.first_name + " " + chat.Conversation.User1.last_name;
+                                        }
+                                        else
+                                        {
+                                            conversatioName = chat.Conversation.User.first_name + " " + chat.Conversation.User.last_name;
+                                        }
+
+
+                                        using (Html.BeginForm("Index", "Chats", FormMethod.Get, new { @class = "needs-validation", novalidate = "novalidate" }))
+                                        {
+                                            @Html.AntiForgeryToken()
+
+                                            <div class="conversation-item" onclick="this.closest('form').submit();">
+                                <div class="conversation-avatar">@GetFirstLetters(conversatioName)</div>
+                                <div class="conversation-details">
+                                    <div class="conversation-name">@conversatioName</div>
+                                    <div class="conversation-preview">
+                                        @if (!byUser && isNew)
+                                        {
+                                            <p style="color: green">New</p>
+                                        }
+                                        @TruncateString(message)
+                                    </div>
+                                </div>
+                                <input type="hidden" name="conversationId" value="@chat.conv_id"/>
+                            </div>
+                        }
+
+
+                    }
+                    }
+                }
+
+            </div>
+        </div>
+    </div>
+    <script>
+        const textarea = document.getElementById("chat-textarea");
+
+        textarea.addEventListener("input", function () {
+            // Reset height to auto to correctly calculate scrollHeight
+            this.style.height = "auto";
+
+            // If content exceeds 4 lines, enable scrolling
+            if (this.scrollHeight > 100) {
+                this.style.height = "100px";
+                this.style.overflowY = "auto";
+            } else {
+                // Grow dynamically up to 4 lines
+                this.style.height = `${this.scrollHeight}px`;
+                this.style.overflowY = "hidden";
+            }
+        });
+
+        function scrollToTargetOrBottom(containerSelector, targetSelector) {
+            const container = document.getElementById(containerSelector); // The scrolling container
+            const target = document.getElementById(targetSelector); // The specific element to look for
+
+            if (target) {
+                // Scroll so the target is near the center of the container
+                const containerHeight = container.clientHeight;
+                const targetOffsetTop = target.offsetTop; // Target's position relative to the container
+                const targetHeight = target.offsetHeight;
+
+                const desiredScrollPosition = targetOffsetTop - (containerHeight / 2) + (targetHeight / 2);
+
+                // Smoothly scroll to the calculated position
+                container.scrollTo({
+                    top: desiredScrollPosition,
+                    //behavior: 'smooth',
+                });
+            } else {
+                // Scroll to the bottom of the container
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+        document.addEventListener('DOMContentLoaded', () => {
+            scrollToTargetOrBottom('chatMessages', 'newMessages');
+        });
+
+        //document.addEventListener('DOMContentLoaded', () => {
+        //    const chatContainer = document.getElementById('chatMessages');
+        //    chatContainer.scrollTop = chatContainer.scrollHeight;
+        //});
+    </script>
+
+</body>
+</html>
+
+
+

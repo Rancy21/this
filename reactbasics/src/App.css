@@ -1,0 +1,45 @@
+* {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+
+.logo {
+  text-decoration: none;
+  color: black;
+}
+.logo-container {
+  display: flex;
+  align-items: center;
+}
+
+.links {
+  display: flex;
+  gap: 30px;
+  list-style: none;
+}
+
+.links a {
+  text-decoration: none;
+  color: #333;
+}
+
+.buttons {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.input-group {
+  box-sizing: border-box;
+  padding: 10px 0px;
+  width: 300px;
+}
+
+.input-group input {
+  width: 100%;
+  padding: 5px;
+  border-radius: 5px;
+}
