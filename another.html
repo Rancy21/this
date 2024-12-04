@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HandyGuys - Profile</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+      }
+
+      body {
+        display: flex;
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        width: 240px;
+        background-color: #1c3b6a;
+        padding: 20px;
+        color: white;
+      }
+
+      .sidebar-item {
+        display: flex;
+        align-items: center;
+        padding: 12px;
+        margin-bottom: 10px;
+        cursor: pointer;
+        border-radius: 8px;
+        gap: 10px;
+      }
+
+      .sidebar-item:hover {
+        background-color: #5ca8d2;
+      }
+
+      .main-content {
+        flex: 1;
+        padding: 20px;
+        background-color: #f5f5f5;
+      }
+
+      .header {
+        background-color: #1c3b6a;
+        color: white;
+        padding: 15px;
+        position: fixed;
+        top: 0;
+        right: 0;
+        left: 240px;
+      }
+
+      .profile-container {
+        background-color: white;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 20px auto;
+      }
+
+      .profile-header {
+        display: flex;
+        align-items: center;
+        margin-bottom: 30px;
+      }
+
+      .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background-color: #1c3b6a;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: white;
+        font-size: 48px;
+        margin-right: 30px;
+      }
+
+      .profile-info h1 {
+        color: #1c3b6a;
+        margin-bottom: 10px;
+      }
+
+      .profile-info p {
+        color: #666;
+        margin-bottom: 5px;
+      }
+
+      .profile-sections {
+        display: flex;
+        gap: 20px;
+      }
+
+      .profile-section {
+        flex: 1;
+        background-color: #f5f5f5;
+        border-radius: 12px;
+        padding: 20px;
+      }
+
+      .section-title {
+        color: #1c3b6a;
+        border-bottom: 2px solid #1c3b6a;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+      }
+
+      .profile-section ul {
+        list-style-type: none;
+        max-height: 100%;
+        max-height: 400px;
+        overflow-y: auto; /* Add vertical scrolling */
+        padding-right: 10px; /* For spacing near scrollbar */
+      }
+
+      .profile-section ul::-webkit-scrollbar {
+        width: 8px;
+      }
+
+      .profile-section ul::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+        margin: 5px 5px 5px 0;
+      }
+
+      .profile-section ul::-webkit-scrollbar-thumb {
+        background: #1c3b6a;
+        border-radius: 10px;
+      }
+
+      .profile-section li {
+        margin-bottom: 10px;
+        padding: 10px;
+        background-color: rgb(255, 255, 255);
+        border-radius: 8px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .edit-button {
+        background-color: #1a75ff;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+      }
+
+      .edit-button:hover {
+        background-color: #0052cc;
+      }
+
+      .badge {
+        background-color: #5ca8d2;
+        color: white;
+        padding: 4px 8px;
+        border-radius: 4px;
+        font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="sidebar">
+      <h1>HandyGuys</h1>
+      <div class="sidebar-item">
+        <svg
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path>
+        </svg>
+        Home
+      </div>
+      <div class="sidebar-item">
+        <svg
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"></path>
+          <circle cx="12" cy="7" r="4"></circle>
+        </svg>
+        Profile
+      </div>
+      <div class="sidebar-item">
+        <svg
+          width="24"
+          height="24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          viewBox="0 0 24 24"
+        >
+          <path
+            d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"
+          ></path>
+        </svg>
+        Chat
+      </div>
+    </div>
+
+    <div class="main-content">
+      <div class="profile-container">
+        <div class="profile-header">
+          <div class="profile-avatar">BJ</div>
+          <div class="profile-info">
+            <h1>Basil Jones</h1>
+            <p>Electrician</p>
+            <p>Email: basil.jones@handyguys.com</p>
+            <p>Phone: (555) 123-4567</p>
+          </div>
+        </div>
+
+        <div class="profile-sections">
+          <div class="profile-section">
+            <h2 class="section-title">Personal Information</h2>
+            <ul>
+              <li>First Name <span class="badge">Basil</span></li>
+              <li>Last Name <span class="badge">Jones</span></li>
+              <li>
+                Email <span class="badge">basil.jones@handyguys.com</span>
+              </li>
+              <li>Phone <span class="badge">(555) 123-4567</span></li>
+            </ul>
+          </div>
+
+          <div class="profile-section">
+            <h2 class="section-title">Professional Details</h2>
+            <ul>
+              <li>
+                Account Type
+                <span class="badge">Service Provider</span>
+              </li>
+              <li style="background-color: #f5f5f5">
+                <strong style="color: #1c3b6a; font-size: 18px">Skills:</strong>
+                <button class="edit-button">Edit Skills</button>
+              </li>
+              <li>Electrical Repair</li>
+              <li>Smart Home Installation</li>
+              <li>Circuit Troubleshooting</li>
+              <li>Wiring Installation</li>
+              <li>Solar Panel Setup</li>
+              <li>Electrical Safety</li>
+              <li>... more skills here ...</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      const textarea = document.getElementsByClassName("profile-section");
+
+      textarea.addEventListener("input", function () {
+        // Reset height to auto to correctly calculate scrollHeight
+        this.style.height = "auto";
+        // If content exceeds 4 lines, enable scrolling
+        if (this.scrollHeight > 100) {
+          this.style.height = "100px";
+          this.style.overflowY = "auto";
+        } else {
+          // Grow dynamically up to 4 lines
+          this.style.height = `${this.scrollHeight}px`;
+          this.style.overflowY = "hidden";
+        }
+      });
+    </script>
+  </body>
+</html>
